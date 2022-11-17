@@ -1,0 +1,20 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "build\\web\\WEB-INF\\lib\\commons-beanutils-1.8.2.jar",
+        "build\\web\\WEB-INF\\lib\\commons-collections-3.2.1.jar",
+        "build\\web\\WEB-INF\\lib\\commons-digester-2.1.jar",
+        "build\\web\\WEB-INF\\lib\\commons-logging-1.1.jar",
+        "build\\web\\WEB-INF\\lib\\groovy-all-2.0.1.jar",
+        "build\\web\\WEB-INF\\lib\\iText-2.1.7.js2.jar",
+        "build\\web\\WEB-INF\\lib\\jasperreports-5.5.0.jar",
+        "build\\web\\WEB-INF\\lib\\jasperreports-fonts-5.5.0.jar",
+        "build\\web\\WEB-INF\\lib\\junit-3.8.2.jar",
+        "build\\web\\WEB-INF\\lib\\junit-4.12.jar",
+        "build\\web\\WEB-INF\\lib\\mysql-connector-java-5.1.23-bin.jar",
+        "build\\web\\WEB-INF\\lib\\omnifaces-1.8.3.jar",
+        "build\\web\\WEB-INF\\lib\\primefaces-5.0.jar",
+        "c:\\Users\\mau_t\\Downloads\\spring-core-5.3.23.jar",
+        "c:\\Program Files\\glassfish-4.0\\glassfish\\lib\\javaee.jar"
+    ]
+}

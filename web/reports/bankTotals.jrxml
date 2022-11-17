@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0d72d881-b3c0-4b6c-96dc-612644734991">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idAgency" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     bank.`Name` AS bank_Name,
+     agency.`Name` AS agency_Name,
+     currency.`Name` AS currency_Name,
+     currency.`Symbol` AS currency_Symbol,
+     bank_has_agency.`Total` AS bank_has_agency_Total
+FROM
+     `agency` agency INNER JOIN `bank_has_agency` bank_has_agency ON agency.`idAgency` = bank_has_agency.`idAgency`
+     INNER JOIN `bank` bank ON bank_has_agency.`idBank` = bank.`idBank`
+     INNER JOIN `currency` currency ON bank_has_agency.`idCurrency` = currency.`idCurrency`
+WHERE
+     agency.idAgency = $P{idAgency}
+AND currency.idCurrency = 1]]>
+	</queryString>
+	<field name="bank_Name" class="java.lang.String"/>
+	<field name="agency_Name" class="java.lang.String"/>
+	<field name="currency_Name" class="java.lang.String"/>
+	<field name="currency_Symbol" class="java.lang.String"/>
+	<field name="bank_has_agency_Total" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="11" width="572" height="20" uuid="db52c85b-a81f-43b2-97b2-40543ab61f62"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE CUENTAS DE ENCAJE LEGAL POR AGENCIA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="31" width="572" height="20" uuid="7dbe0b21-440d-452d-8f72-b7c006b42fed"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{agency_Name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="472" y="49" width="100" height="20" uuid="56b9fcf8-483e-4db1-b48f-980dded8bb1e"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="85" height="85" uuid="ca8d4a69-78ba-428f-9354-d284506f8888"/>
+				<imageExpression><![CDATA["C:\\Users\\usuario\\Pictures\\banco-union-bolivia.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="372" y="49" width="100" height="20" uuid="24f3ac7e-aaa3-4ee9-b716-416c9c0949e8"/>
+				<text><![CDATA[Fecha de impresión:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="30" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="76" y="0" width="224" height="20" uuid="d7fb95aa-edb2-4096-9f8a-c7af8a2545b1"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Entidad Financiera]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="0" width="139" height="20" uuid="17ae185b-0039-4776-97a4-9d1cf91f6a40"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="76" y="0" width="224" height="20" uuid="d05777fe-353e-4323-82fe-34072b293d97"/>
+				<textFieldExpression><![CDATA[$F{bank_Name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="300" y="0" width="100" height="20" uuid="049b3bb7-47d5-4def-8b7c-8453665b42e1"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{bank_has_agency_Total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="403" y="0" width="100" height="20" uuid="009caec8-701a-4f78-a888-aa284e35c776"/>
+				<textFieldExpression><![CDATA[$F{currency_Symbol}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

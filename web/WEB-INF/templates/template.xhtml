@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+        <f:event type="preRenderView" listener="#{templateController.verifySession()}"/>
+    </h:head>
+
+    <h:body>
+
+        <div id="top">
+            <p:growl autoUpdate="true" showDetail="true"/>
+            <h:form>
+                <h:panelGrid columns="3">
+                    <p:outputLabel value="Usuario: #{templateController.user.name}"/>
+                    <p:spacer width="480" height="10"/>
+                    <p:clock pattern="dd-MM-yyyy" mode="server"/>
+                    <p:outputLabel value="Agencia: #{templateController.user.idAgency.name}"/>
+                    <h:column/>
+                    <h:column/>
+                    <p:commandButton actionListener="#{templateController.logout()}" value="Cerrar Sesión" action="/login?faces-redirect=true" />
+                    <p:commandButton value="Cambiar contraseña" oncomplete="PF('changePassword').show();" />
+                </h:panelGrid> 
+            </h:form>
+        </div>
+
+        <div id="content" class="center_content">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+
+        <div id="bottom">
+            <ui:insert name="bottom">Sistema de Control de Bóveda, Cajas y Encaje Legal</ui:insert>
+        </div>
+        
+        <p:dialog widgetVar="changePassword" header="Cambiar contraseña" modal="true" resizable="false">
+            <h:form id="frmChange">
+                <p:outputPanel id="changePanel" style="text-align:center;">
+                    <p:panelGrid  columns="2">
+
+                        <h:outputText value="Contraseña actual: " />
+                        <p:password value="#{templateController.currentPassword}" required="true" />
+                        
+                        <h:outputLabel for="txtPass1" value="Contraseña nueva: *" />
+                        <p:password id="txtPass1" value="#{templateController.newPassword}" match="txtPass2" label="Password 1" required="true" />
+
+                        <h:outputLabel for="txtPass2" value="Confirmar contraseña: *" />
+                        <p:password id="txtPass2" value="#{templateController.validatePassword}" label="Password 2" required="true" />
+
+                        <p:column/>
+                        <p:commandButton value="Guardar" action="#{templateController.changePassword()}"/>
+
+                    </p:panelGrid>
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+
+</html>

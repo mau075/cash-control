@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <title>Dashboard - Control de bóveda</title>
+        <f:event type="preRenderView" listener="#{homeController.checkRole()}"/>
+        <f:event type="preRenderView" listener="#{homeController.loadCashiersAndVault()}"/>
+    </h:head>
+    <h:body>
+        
+        <ui:composition template="./../WEB-INF/templates/template.xhtml">
+       
+            <ui:define name="content">
+                <h:form>
+                    <p:growl autoUpdate="true" showDetail="true" />
+                    
+                    <p:tabView id="tabs" dynamic="true" orientation="left">
+
+                            <p:tab title="CUADRE DIARIO - SALDOS POR CAJERO">
+                                 
+                                <p:panelGrid id="tab1" columns="3">
+                                    
+                                    <h:column/>
+                                    <p:outputLabel value="Bolivianos" style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    <p:outputLabel value="Dólares" style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+
+                                    <ui:repeat id="cajas" value="#{homeController.checkouts}" var="C">
+                                        <p:panelGrid columns="1"> 
+                                            <p:outputLabel id="caja" value="#{C.cashier}"/>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="locals" value="#{homeController.localCurrency}" var="L" varStatus="loop">
+                                        <p:panelGrid columns="1" >
+                                            <p:inputText id="local" value="#{homeController.localCurrency[loop.index]}" size="7" required="true" >
+                                                <f:converter converterId="javax.faces.BigDecimal" />
+                                                <f:convertNumber minFractionDigits="2"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="foreigns" value="#{homeController.foreignCurrency}" var="F" varStatus="loop">
+                                        <p:panelGrid columns="1" > 
+                                            <p:inputText id="foreign" value="#{homeController.foreignCurrency[loop.index]}" size="7" required="true">
+                                                <f:converter converterId="javax.faces.BigDecimal"/>
+                                                <f:convertNumber minFractionDigits="2"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <p:outputLabel value="TOTAL: " style="display:block; text-align:center"/> 
+                                    <p:outputLabel id="lblTotalLocalCurrency" value="#{homeController.totalLocalCurrency}" style="display:block; text-align:center; font-size: 16px">
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber minFractionDigits="2"/>
+                                    </p:outputLabel>
+                                    <p:outputLabel id="lblTotalForeignCurrency" value="#{homeController.totalForeignCurrency}" style="display:block; text-align:center; font-size: 16px">
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber minFractionDigits="2"/>
+                                    </p:outputLabel>
+
+                                    <h:column/>
+                                    <p:commandButton icon="ui-icon-disk" value="Guardar" action="#{homeController.register()}" update="tab1"/>
+
+                                </p:panelGrid>
+
+                            </p:tab>
+                      <!--SECOND TAB-->
+                            <p:tab title="EFECTIVO - BÓVEDA PULMÓN">                                    
+                                
+                                <p:panelGrid id="tab2" columns="4">
+
+                                    <h:column/>
+                                    <p:outputLabel value="Bolivianos" style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    <h:column/>
+                                    <p:outputLabel value="Dólares" style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+
+                                    <ui:repeat id="localLabels" value="#{homeController.localCash}" var="A">
+                                        <p:panelGrid columns="1" > 
+                                            <p:outputLabel id="localLabel" value="#{A.cashPK.value.intValue()}" />                                                      
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="localTexts" value="#{homeController.localVault}" var="B" varStatus="loop">
+                                        <p:panelGrid columns="1" >
+                                            <p:inputText id="localText" value="#{homeController.localVault[loop.index]}" size="7" required="true" >
+                                                <f:converter converterId="javax.faces.BigDecimal"/>
+                                                <f:convertNumber maxFractionDigits="0"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="foreignLabels" value="#{homeController.foreignCash}" var="C">
+                                        <p:panelGrid columns="1" > 
+                                            <p:outputLabel id="foreignLabel" value="#{C.cashPK.value.intValue()}" />
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="foreignTexts" value="#{homeController.foreignVault}" var="B" varStatus="loop">
+                                        <p:panelGrid columns="1" >
+                                            <p:inputText id="localText" value="#{homeController.foreignVault[loop.index]}" size="7" required="true" >
+                                                <f:converter converterId="javax.faces.BigDecimal"/>
+                                                <f:convertNumber maxFractionDigits="0"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <p:outputLabel value="TOTAL: " style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    <p:outputLabel id="lblTotalLocal" value="#{homeController.totalLocalVault}" style="display:block; text-align:center; font-size: 16px" >
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber maxFractionDigits="0"/>
+                                    </p:outputLabel>
+                                    <p:outputLabel value="TOTAL: " style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    <p:outputLabel id="lblTotalForeign" value="#{homeController.totalForeignVault}" style="display:block; text-align:center; font-size: 16px" >
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber maxFractionDigits="0"/>
+                                    </p:outputLabel>
+
+                                    <h:column/>
+                                    <p:commandButton icon="ui-icon-disk" value="Guardar" action="#{homeController.registerVault()}" update="tab2"/>                                                
+                                </p:panelGrid>
+
+                            </p:tab>
+                      <!--THIRD TAB-->
+                            <p:tab title="DETALLE DE EFECTIVO">                                    
+                                
+                                <p:panelGrid id="tab3" columns="4">
+
+                                    <h:column/>
+                                    <p:outputLabel value="Bolivianos" style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    <h:column/>
+                                    <p:outputLabel value="Dólares" style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+
+                                    <ui:repeat id="localMainLabels" value="#{homeController.localCash}" var="E">
+                                        <p:panelGrid columns="1" > 
+                                            <p:outputLabel id="localMainLabel" value="#{E.cashPK.value.intValue()}" />                                                      
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="localMainTexts" value="#{homeController.localMainVault}" var="F" varStatus="loop">
+                                        <p:panelGrid columns="1" >
+                                            <p:inputText id="localMainText" value="#{homeController.localMainVault[loop.index]}" size="7" required="true" >
+                                                <f:converter converterId="javax.faces.BigDecimal"/>
+                                                <f:convertNumber maxFractionDigits="0"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="foreignMainLabels" value="#{homeController.foreignCash}" var="G">
+                                        <p:panelGrid columns="1" > 
+                                            <p:outputLabel id="foreignMainLabel" value="#{G.cashPK.value.intValue()}" />
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="foreignMainTexts" value="#{homeController.foreignMainVault}" var="H" varStatus="loop">
+                                        <p:panelGrid columns="1" >
+                                            <p:inputText id="foreignMainText" value="#{homeController.foreignMainVault[loop.index]}" size="7" required="true" >
+                                                <f:converter converterId="javax.faces.BigDecimal"/>
+                                                <f:convertNumber maxFractionDigits="0"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <p:outputLabel value="TOTAL: " style="display:block; text-align:center; font-size: 16px; font-weight: 700"/> 
+                                    <p:outputLabel id="lblTotalMainLocal" value="#{homeController.totalMainLocalVault}" style="display:block; text-align:center; font-size: 16px">
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber maxFractionDigits="0"/>
+                                    </p:outputLabel>
+                                    <p:outputLabel value="TOTAL: " style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    <p:outputLabel id="lblTotalMainForeign" value="#{homeController.totalMainForeignVault}" style="display:block; text-align:center; font-size: 16px">
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber maxFractionDigits="0"/>
+                                    </p:outputLabel>
+
+                                    <h:column/>
+                                    <p:commandButton icon="ui-icon-disk" value="Guardar" action="#{homeController.registerMainVault()}" update="tab3"/>                                                
+                                </p:panelGrid>
+
+                            </p:tab>
+                     <!--FOURTH TAB--> 
+                            <p:tab title="MUTILADOS">                                    
+                                
+                                <p:panelGrid id="tab4" columns="2">
+
+                                    <h:column/>
+                                    <p:outputLabel value="Bolivianos" style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    
+
+                                    <ui:repeat id="localMutilatedLabels" value="#{homeController.mutilatedCash}" var="A">
+                                        <p:panelGrid columns="1" > 
+                                            <p:outputLabel id="localMutilatedLabel" value="#{A.cashPK.value.intValue()}" />                                                      
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <ui:repeat id="localMutilatedTexts" value="#{homeController.mutilatedVault}" var="B" varStatus="loop">
+                                        <p:panelGrid columns="1" >
+                                            <p:inputText id="localMutilatedText" value="#{homeController.mutilatedVault[loop.index]}" size="7" required="true" >
+                                                <f:converter converterId="javax.faces.BigDecimal"/>
+                                                <f:convertNumber maxFractionDigits="0"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </ui:repeat>
+
+                                    <p:outputLabel value="TOTAL: " style="display:block; text-align:center; font-size: 16px; font-weight: 700"/>
+                                    <p:outputLabel id="lblTotalMutilated" value="#{homeController.totalMutilated}" style="display:block; text-align:center; font-size: 16px" >
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber maxFractionDigits="0"/>
+                                    </p:outputLabel>
+
+                                    <h:column/>
+                                    <p:commandButton icon="ui-icon-disk" value="Guardar" action="#{homeController.registerMutilated()}" update="tab4"/>                                                
+                                </p:panelGrid>
+
+                            </p:tab>
+                      
+                            <p:tab title="Reporte diario">
+                                <p:panelGrid columns="3">
+                                    <p:outputLabel for="created" value="Fecha:" />
+                                    <p:calendar id="created" value="#{homeController.created}" />
+                                    <p:commandButton value="Ver reporte" ajax="false" action="#{homeController.openReport()}" onclick="this.form.target='_blank'"/>
+                                </p:panelGrid>
+                            </p:tab>
+
+                        </p:tabView>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

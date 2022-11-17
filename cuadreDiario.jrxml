@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cuadreDiario" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c739f096-33a5-43b3-b90e-ad5345464d1c">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="Created" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idAgency" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     agency.`Name` AS agency_Name,
+     agency.`Address` AS agency_Address,
+     pettycash.`Created` AS pettycash_Created,
+     pettycash.`Amount` AS pettycash_Amount,
+     checkout.`Cashier` AS checkout_Cashier,
+     currency.`Name` AS currency_Name,
+     currency.`Symbol` AS currency_Symbol
+FROM
+     `checkout` checkout INNER JOIN `pettycash` pettycash ON checkout.`idAgency` = pettycash.`idAgency`
+     AND checkout.`Code` = pettycash.`Code`
+     INNER JOIN `agency` agency ON pettycash.`idAgency` = agency.`idAgency`
+     INNER JOIN `currency` currency ON pettycash.`idCurrency` = currency.`idCurrency`
+WHERE pettycash.Created = $P{Created}
+and agency.idAgency = $P{idAgency}
+ORDER BY checkout.code asc;]]>
+	</queryString>
+	<field name="agency_Name" class="java.lang.String"/>
+	<field name="agency_Address" class="java.lang.String"/>
+	<field name="pettycash_Created" class="java.sql.Date"/>
+	<field name="pettycash_Amount" class="java.math.BigDecimal"/>
+	<field name="checkout_Cashier" class="java.lang.String"/>
+	<field name="currency_Name" class="java.lang.String"/>
+	<field name="currency_Symbol" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="18" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="22" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="15" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="14" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="320" splitType="Stretch">
+			<crosstab>
+				<reportElement x="0" y="0" width="555" height="147" uuid="575eda38-ac08-4cf5-b255-5fa0644bdf57"/>
+				<rowGroup name="checkout_Cashier" width="70" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{checkout_Cashier}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="70" height="25" uuid="73c75990-26cd-4336-9363-51fff5eb8c5e"/>
+								<textFieldExpression><![CDATA[$V{checkout_Cashier}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="70" height="25" uuid="124a35a9-9484-44d1-8cc7-f2d097530cb0"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total checkout_Cashier]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="currency_Name" height="30">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{currency_Name}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="30" uuid="e326cadf-ebad-4caf-bbc1-cfcc87efbc33"/>
+								<textFieldExpression><![CDATA[$V{currency_Name}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="pettycash_AmountMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{pettycash_Amount}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="dad121c6-56df-4112-93a8-8e7e0d901121"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="checkout_Cashier">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="8bc57643-7645-4204-976a-7802e58fb412"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="currency_Name">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="faf2707e-c6f6-4a7d-bee5-68ab717879d3"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="checkout_Cashier" columnTotalGroup="currency_Name">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="d890b4dd-9255-48d3-b70c-dacc99c52fb6"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

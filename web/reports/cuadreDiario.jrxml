@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9d694225-6bdf-430f-904d-3eea479da1bc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="150"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="created" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idAgency" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mainVault" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idBank" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\usuario\\Documents\\NetBeansProjects\\ControlMain\\web\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     agency.`Name` AS agency_Name,
+     pettycash.`Amount` AS pettycash_Amount,
+     pettycash.`Created` AS pettycash_Created,
+     checkout.`Cashier` AS checkout_Cashier,
+     checkout.`Code` AS checkout_Code,
+     currency.`Name` AS currency_Name,
+     currency.`Symbol` AS currency_Symbol
+FROM
+     `checkout` checkout INNER JOIN `pettycash` pettycash ON checkout.`idAgency` = pettycash.`idAgency`
+     AND checkout.`Code` = pettycash.`Code`
+     INNER JOIN `agency` agency ON pettycash.`idAgency` = agency.`idAgency`
+     INNER JOIN `currency` currency ON pettycash.`idCurrency` = currency.`idCurrency`
+WHERE
+     pettycash.Created = $P{created}
+     and agency.idAgency = $P{idAgency}
+ORDER BY
+     checkout.code ASC]]>
+	</queryString>
+	<field name="agency_Name" class="java.lang.String"/>
+	<field name="pettycash_Amount" class="java.math.BigDecimal"/>
+	<field name="pettycash_Created" class="java.sql.Date"/>
+	<field name="checkout_Cashier" class="java.lang.String"/>
+	<field name="checkout_Code" class="java.lang.String"/>
+	<field name="currency_Name" class="java.lang.String"/>
+	<field name="currency_Symbol" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="614" splitType="Stretch">
+			<crosstab>
+				<reportElement x="27" y="102" width="517" height="157" uuid="18a62c80-e62f-4def-899e-64265c96b5ef"/>
+				<rowGroup name="checkout_Code" width="71" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{checkout_Code}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="#,##0">
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="71" height="25" uuid="6c2047ba-dde2-46f1-ab7f-e1cb723e0948"/>
+								<textElement verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{checkout_Code}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="130" y="0" width="70" height="25" uuid="5ed8afcb-0b76-4660-bd31-fa9273ce17d2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<text><![CDATA[TOTAL]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="checkout_Cashier" width="129">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{checkout_Cashier}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid"/>
+								<topPen lineWidth="0.5" lineStyle="Solid"/>
+								<leftPen lineWidth="0.5" lineStyle="Solid"/>
+								<bottomPen lineWidth="0.5" lineStyle="Solid"/>
+								<rightPen lineWidth="0.5" lineStyle="Solid"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="129" height="25" uuid="8a072b2b-0f5e-4486-9881-5219f87790df"/>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$V{checkout_Cashier}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="currency_Name" height="30">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{currency_Name}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="85" height="30" uuid="775d3629-c5f9-4c4f-bf82-b166a061fdc5"/>
+								<textElement verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{currency_Name}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="pettycash_AmountMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{pettycash_Amount}]]></measureExpression>
+				</measure>
+				<crosstabCell width="85" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="85" height="25" uuid="668723f7-e1d2-4108-b092-521e7803a481"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="85" height="25" rowTotalGroup="checkout_Code">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0.00">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="85" height="25" uuid="109cf724-e874-46c7-8eae-82b241899270"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="currency_Name">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="2a7c17ff-74b8-46bc-a00b-a98803b09842"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="checkout_Code" columnTotalGroup="currency_Name">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="a5d030cd-5934-43fe-b070-18665982d78c"/>
+							<textFieldExpression><![CDATA[$V{pettycash_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="checkout_Cashier">
+					<cellContents/>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="checkout_Cashier" columnTotalGroup="currency_Name">
+					<cellContents/>
+				</crosstabCell>
+			</crosstab>
+			<staticText>
+				<reportElement x="214" y="0" width="144" height="26" uuid="fb7c6e2a-c633-4189-9a64-78267879407b"/>
+				<textElement>
+					<font fontName="Arial" size="18"/>
+				</textElement>
+				<text><![CDATA[CUADRE DIARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="82" width="517" height="20" uuid="93079036-12f4-45e5-ab64-c5e5d01abdf9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[SALDOS POR CAJERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="259" width="517" height="20" uuid="9a01f202-975c-498e-924e-494ed79b1381"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE EFECTIVO POR MONEDA]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="27" y="279" width="400" height="205" uuid="f2bff3c9-c4e4-4633-a268-b113a16703c3"/>
+				<subreportParameter name="idAgency">
+					<subreportParameterExpression><![CDATA[$P{idAgency}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="created">
+					<subreportParameterExpression><![CDATA[$P{created}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idBank">
+					<subreportParameterExpression><![CDATA[$P{idBank}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "detalleBoveda.jasper"]]></subreportExpression>
+			</subreport>
+			<image>
+				<reportElement x="2" y="0" width="96" height="82" uuid="c69b10e4-8645-4a74-a600-178c0fe2632d"/>
+				<imageExpression><![CDATA["C:\\Users\\usuario\\Pictures\\banco-union-bolivia.jpg"]]></imageExpression>
+			</image>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="238" y="26" width="100" height="20" uuid="bf807837-e2af-4d01-a731-c5501492a5cc"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{created}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="376" y="46" width="100" height="20" uuid="970b2fac-1efe-4a9f-af59-f60395e603c0"/>
+				<text><![CDATA[Fecha de impresión:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="476" y="46" width="100" height="20" uuid="4710677e-c700-4c08-b5a4-8d553d1e1720"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="27" y="509" width="400" height="98" uuid="63776307-1e3d-4c10-ab4a-1ebc5530c103"/>
+				<subreportParameter name="Created">
+					<subreportParameterExpression><![CDATA[$P{created}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idAgency">
+					<subreportParameterExpression><![CDATA[$P{idAgency}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="idBank">
+					<subreportParameterExpression><![CDATA[$P{idBank}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "mutilated.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="27" y="488" width="517" height="20" uuid="4591e4dd-5ed9-4e1f-969c-4d9b175f810c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE BILLETES MUTILADOS - MONEDA NACIONAL]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

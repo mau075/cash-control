@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e8427417-f5fe-4bf7-ad6a-c67c34fd8389">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idAgency" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     vault.`Amount` AS vault_Amount,
+     currency.`Name` AS currency_Name,
+     currency.`Symbol` AS currency_Symbol,
+     cash.`Value` AS cash_Value,
+     vault.`MainVault` AS vault_MainVault,
+     vault.`Active` AS vault_Active,
+     vault.`Created` AS vault_Created,
+     agency.`Name` AS agency_Name
+FROM
+     `agency` agency INNER JOIN `vault` vault ON agency.`idAgency` = vault.`idAgency`
+     INNER JOIN `cash` cash ON vault.`Value` = cash.`Value`
+     AND cash.`Active` = vault.`Active`
+     AND cash.`idCurrency` = vault.`idCurrency`
+     INNER JOIN `currency` currency ON cash.`idCurrency` = currency.`idCurrency`
+WHERE
+     vault.MainVault = 'reserve'
+ AND agency.idAgency = $P{idAgency}
+ AND vault.amount <> 0
+ORDER BY
+     cash_Value DESC]]>
+	</queryString>
+	<field name="vault_Amount" class="java.math.BigDecimal"/>
+	<field name="currency_Name" class="java.lang.String"/>
+	<field name="currency_Symbol" class="java.lang.String"/>
+	<field name="cash_Value" class="java.math.BigDecimal"/>
+	<field name="vault_MainVault" class="java.lang.String"/>
+	<field name="vault_Active" class="java.lang.Boolean"/>
+	<field name="vault_Created" class="java.sql.Date"/>
+	<field name="agency_Name" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="86" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="472" y="46" width="100" height="20" uuid="77a96650-e9d8-4ab5-8237-b33341103123"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="4" width="572" height="20" uuid="6947f510-5fbe-4765-b7f2-78b5ba020621"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE MOVIMIENTO DE ENCAJE LEGAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="25" width="572" height="20" uuid="1b018533-84ff-4b6d-ac2d-5c19d4f3af26"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{agency_Name}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="93" height="84" uuid="dd16d38e-e84f-456c-b39f-f5315ad60fb4"/>
+				<imageExpression><![CDATA["C:\\Users\\usuario\\Pictures\\banco-union-bolivia.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="372" y="46" width="100" height="20" uuid="bcd68c4c-3312-4d43-8b3d-11803c6cddeb"/>
+				<text><![CDATA[Fecha de impresión:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="27" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="148" y="1" width="132" height="20" uuid="b6fc0080-e0d9-4463-b1da-46b1c1a10329"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Corte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="1" width="100" height="20" uuid="6db1ba53-df0e-4098-8eb7-3a627e5413c0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="280" y="1" width="142" height="20" uuid="77bd8368-1dc2-44b3-bbd7-b979e24a2555"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Monto Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="1" width="100" height="20" uuid="eb36ad8d-15da-4d2b-908c-a25701b9c23c"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Movimiento]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="205" y="0" width="75" height="20" uuid="331479d5-f5ed-49d2-a49e-7a420331c015"/>
+				<textFieldExpression><![CDATA[$F{currency_Symbol}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement x="148" y="0" width="57" height="20" uuid="c4b52a1f-9a32-4450-9913-805823cb681c"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{cash_Value}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="48" y="0" width="100" height="20" uuid="1e33f326-3894-40af-bf9a-b27c959c40a2"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{vault_Created}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="280" y="1" width="142" height="20" uuid="7043ea42-3f0b-418e-be92-9c866e858eba"/>
+				<textFieldExpression><![CDATA[$F{vault_Amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="422" y="1" width="100" height="20" uuid="6a4f7933-8b82-4f48-807e-cd496085b4c9"/>
+				<textElement textAlignment="Center" markup="styled"/>
+				<textFieldExpression><![CDATA[( $F{vault_Active}.equals( true ) ? "<style forecolor='green'>Ingreso</style>" : "<style forecolor='red'>Egreso</style>" )]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="38" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="84" splitType="Stretch"/>
+	</summary>
+</jasperReport>

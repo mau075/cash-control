@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Administrador de Sistema</title>
+        <f:event type="preRenderView" listener="#{templateController.verifySession()}"/>
+        <f:event type="preRenderView" listener="#{managerController.checkRole()}"/>
+    </h:head>
+
+    <h:body>
+        <div id="top">
+            <h:form>
+                <h:panelGrid columns="2">
+                    <p:spacer width="550" height="10"/>
+                    <h3>Administrador de Sistema</h3>
+                    <p:commandButton actionListener="#{templateController.logout()}" value="Cerrar Sesión" action="/login?faces-redirect=true" />
+                </h:panelGrid>
+            </h:form>
+        </div>
+
+        <div id="content" class="center_content">
+            <p:growl autoUpdate="true" showDetail="true"/>
+            
+            <p:tabView id="tabs" dynamic="true" orientation="left">
+
+                <p:tab id="tab4" title="Agencias">
+                    <h:form id="frmTab4">
+                        <p:dataTable id="agencyTable" var="agency" editable="true" value="#{managerController.agencies}">
+                            
+                            <p:ajax event="rowEdit" listener="#{managerController.onRowEditAgency}" update=":tabs:frmTab2:userTable, :tabs:frmTab3:checkoutTable"/>
+                            <p:ajax event="rowEditCancel" listener="#{managerController.onRowCancel}" />
+
+                            <p:column  filterBy="#{agency.idAgency}" headerText="ID de Agencia" filterMatchMode="contains">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{agency.idAgency}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{agency.idAgency}" disabled="true"/></f:facet>
+                                </p:cellEditor>                               
+                            </p:column>
+                            
+                            <p:column filterBy="#{agency.name}" headerText="Nombre" filterMatchMode="contains">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{agency.name}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{agency.name}" /></f:facet>
+                                </p:cellEditor>                               
+                            </p:column>
+                            
+                            <p:column filterBy="#{agency.address}" headerText="Dirección" filterMatchMode="contains">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{agency.address}" /></f:facet>
+                                    <f:facet name="input"><p:inputText value="#{agency.address}" /></f:facet>
+                                </p:cellEditor>                               
+                            </p:column>
+                            
+                            <p:column style="width:32px">
+                                <p:rowEditor />
+                            </p:column>
+                            
+                            <f:facet name="footer">
+                                <p:commandButton update=":frmCreateAgency:newAgencyPanel" value="Agregar Agencia" icon="ui-icon-plus" oncomplete="PF('createAgencyDialog').show();" />
+                            </f:facet>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
+                
+                <p:tab id="tab2" title="Usuarios">
+                    <h:form id="frmTab2">
+                        <p:dataTable id="userTable" var="user" editable="true" value="#{managerController.usuarios}">
+                        
+                        <p:ajax event="rowEdit" listener="#{managerController.onRowEditUser}" />
+                        <p:ajax event="rowEditCancel" listener="#{managerController.onRowCancel}" />
+                        
+                        <p:column filterBy="#{user.idUser}" headerText="ID de usuario" filterMatchMode="contains">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{user.idUser}" /></f:facet>
+                                <f:facet name="input"><p:inputText id="idInput" value="#{user.idUser}" /></f:facet>
+                            </p:cellEditor>                               
+                        </p:column>
+                        
+                        <p:column filterBy="#{user.idAgency.name}" headerText="Agencia" filterMatchMode="contains">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{user.idAgency.name}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{user.idAgency}" converter="omnifaces.SelectItemsConverter">
+                                        <f:selectItems value="#{managerController.agencies}" var="somAgencies" itemValue="#{somAgencies}" itemLabel="#{somAgencies.name}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>                               
+                        </p:column>
+                        
+                        <p:column filterBy="#{user.idRole.name}" headerText="Rol" filterMatchMode="contains">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{user.idRole.name}" /></f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{user.idRole}" converter="omnifaces.SelectItemsConverter">
+                                        <f:selectItems value="#{managerController.roles}" var="somRoles" itemValue="#{somRoles}" itemLabel="#{somRoles.name}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>                               
+                        </p:column>
+                        
+                        <p:column filterBy="#{user.name}" headerText="Nombre" filterMatchMode="contains">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{user.name}" /></f:facet>
+                                <f:facet name="input"><p:inputText id="nameInput" value="#{user.name}" /></f:facet>
+                            </p:cellEditor>                               
+                        </p:column>
+                        
+                        <p:column style="width:32px">
+                            <p:rowEditor />
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Nuevo" icon="ui-icon-plus"  oncomplete="PF('createUserDialog').show();" update=":frmCreateUser:newUserPanel" />
+                        </f:facet>
+                    </p:dataTable>
+                    </h:form>   
+                </p:tab>    
+                
+                <p:tab id="tab3" title="Cajas">
+                    <h:form id="frmTab3">
+                        <p:dataTable id="checkoutTable" var="checkout" value="#{managerController.agencies}" selectionMode="single" selection="#{managerController.selectedAgency}" rowKey="#{checkout.idAgency}">
+
+                            <p:column>
+                                <f:facet name="header">Agencias</f:facet>
+                                <h:outputText value="#{checkout.name}"/>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton update=":frmCreateCheckout:checkoutPanel" value="Agregar Cajas" oncomplete="PF('newCheckoutDialog').show();" />
+                                <p:commandButton update=":frmEditCajas" action="#{managerController.findCheckouts()}" value="Editar Cajas" oncomplete="PF('editCajasDialog').show();"  />
+                            </f:facet>
+                        </p:dataTable>
+                    </h:form>
+                </p:tab>
+                
+            </p:tabView>
+            
+            <p:dialog widgetVar="createUserDialog" header="Nuevo Usuario" modal="true" resizable="false">
+                <h:form id="frmCreateUser">
+                    <p:outputPanel id="newUserPanel" style="text-align: center;">
+                        
+                        <p:panelGrid columns="2">
+                            <h:outputText value="ID de Usuario:" />
+                            <h:inputText value="#{managerController.newUser.idUser}" />
+
+                            <h:outputText value="Agencia:" />
+                            <p:selectOneMenu value="#{managerController.newUser.idAgency}" converter="omnifaces.SelectItemsConverter">
+                                <f:selectItems value="#{managerController.agencies}" var="newAgency" itemValue="#{newAgency}" itemLabel="#{newAgency.name}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputText value="Rol:" />
+                            <p:selectOneMenu value="#{managerController.newUser.idRole}" converter="omnifaces.SelectItemsConverter">
+                                <f:selectItems value="#{managerController.roles}" var="newRole" itemValue="#{newRole}" itemLabel="#{newRole.name}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputText value="Nombre:" />
+                            <h:inputText value="#{managerController.newUser.name}" />
+
+                            <p:column/>
+                            <p:commandButton value="Guardar" action="#{managerController.createUser()}" update=":tabs:frmTab2:userTable, newUserPanel"/>
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+
+            <p:dialog widgetVar="createAgencyDialog" header="Nueva Agencia" modal="true" resizable="false">
+                <h:form id="frmCreateAgency">
+                    <p:outputPanel id="newAgencyPanel" style="text-align: center;">
+                        <p:panelGrid columns="2">
+                        
+                            <h:outputText value="Código de Agencia:" />
+                            <h:inputText value="#{managerController.newAgency.idAgency}" />
+
+                            <h:outputText value="Nombre:" />
+                            <h:inputText value="#{managerController.newAgency.name}" />
+
+                            <h:outputText value="Dirección" />
+                            <h:inputText value="#{managerController.newAgency.address}" />
+
+                            <p:column/>
+                            <p:commandButton value="Guardar" action="#{managerController.createAgency()}" update=":tabs:frmTab4, :tabs:frmTab3"  />
+                            
+                        </p:panelGrid>  
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog widgetVar="editCajasDialog" header="Editar Cajas" modal="true" resizable="false" width="450">
+                <h:form id="frmEditCajas">
+                    <p:outputPanel id="editCajasPanel" style="text-align: center;">
+                        <p:dataTable id="cajasTable" var="table" editable="true" value="#{managerController.checkouts}">
+                            
+                            <p:ajax event="rowEdit" listener="#{managerController.onRowEditCheckout}" />
+                            <p:ajax event="rowEditCancel" listener="#{managerController.onRowCancel}" />
+                            
+                            <p:column headerText="Código" width="100">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{table.checkoutPK.code}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="codeInput" value="#{table.checkoutPK.code}" style="width:100%"/></f:facet>
+                                </p:cellEditor>                               
+                            </p:column>
+                            
+                            <p:column headerText="Nombre del Cajero" width="250">
+                                <p:cellEditor>
+                                    <f:facet name="output"><h:outputText value="#{table.cashier}" /></f:facet>
+                                    <f:facet name="input"><p:inputText id="cashierInput" value="#{table.cashier}" style="width:100%"/></f:facet>
+                                </p:cellEditor>  
+                            </p:column>
+                            
+                            <p:column style="width:32px">
+                                <p:rowEditor />
+                            </p:column>
+                            
+                        </p:dataTable>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+            
+            <p:dialog widgetVar="newCheckoutDialog" header="Nueva Caja" modal="true" resizable="false">
+                <h:form id="frmCreateCheckout">
+                    <p:outputPanel id="checkoutPanel" style="text-align:center;">
+                        <p:panelGrid  columns="2">
+                            
+                            <h:outputText value="Código de Caja: " />
+                            <h:inputText value="#{managerController.newPK.code}" />
+                            
+                            <h:outputText value="Nombre del Cajero: " />
+                            <h:inputText value="#{managerController.newCheckout.cashier}" />
+                            
+                            <p:column/>
+                            <p:commandButton value="Guardar" action="#{managerController.createCheckout()}" />
+                            
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </h:form>
+            </p:dialog>
+            
+        </div>
+
+        <div id="bottom">
+            <ui:insert name="bottom">Sistema de Control de Bóveda, Cajas y Encaje Legal</ui:insert>
+        </div>
+    </h:body>
+</html>

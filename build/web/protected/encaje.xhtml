@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <title>Dashboard - Control de Encaje Legal</title>
+        <f:event type="preRenderView" listener="#{encajeController.checkRole()}"/>
+        <f:event type="preRenderView" listener="#{encajeController.loadCashiersAndVault()}"/>
+        <f:event type="preRenderView" listener="#{encajeController.refreshReserveTotals()}"/>
+    </h:head>
+    
+    <h:body>
+        <ui:composition template="./../WEB-INF/templates/template.xhtml"> 
+            <ui:define name="content">
+                <h:form>
+                <p:growl autoUpdate="true" showDetail="true"/>
+
+                <p:tabView id="tabs" dynamic="true" orientation="left">
+
+                    <p:tab title="Movimiento de Encaje de Agencia">
+                        
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Entidad: "/>
+                            <p:selectOneMenu value="#{encajeController.bank}" converter="omnifaces.SelectItemsConverter" >
+                                <f:selectItems value="#{encajeController.banks}" var="somBanks" itemValue="#{somBanks}" itemLabel="#{somBanks.name}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        
+                        <p:panelGrid id="tab2" columns="3">
+                            <h:column/>
+                            <p:outputLabel value="Bolivianos"/>
+                            <h:column/>
+
+                            <ui:repeat id="localLabels" value="#{encajeController.localCash}" var="A">
+                                <p:panelGrid columns="1" > 
+                                    <p:outputLabel id="localLabel" value="#{A.cashPK.value.intValue()}"/>                                                  
+                                </p:panelGrid>
+                            </ui:repeat>
+
+                            <ui:repeat id="totalLabels" value="#{encajeController.reserveTotals}" var="R">
+                                <p:panelGrid columns="1" > 
+                                    <p:outputLabel id="totalLabel" value="#{R}">
+                                        <f:convertNumber minFractionDigits="2"/>
+                                    </p:outputLabel>
+                                </p:panelGrid>
+                            </ui:repeat>
+                            
+                            <ui:repeat id="localTexts" value="#{encajeController.localVault}" var="B" varStatus="loop">
+                                <p:panelGrid columns="1" >
+                                    <p:inputText id="localText" value="#{encajeController.localVault[loop.index]}" size="7" required="true" >
+                                        <f:converter converterId="javax.faces.BigDecimal"/>
+                                        <f:convertNumber minFractionDigits="2"/>
+                                    </p:inputText>
+                                </p:panelGrid>
+                            </ui:repeat>
+                                                                          
+                        </p:panelGrid>
+                        
+                        <p:panelGrid columns="3">
+                            <h:column/>
+                            <p:commandButton icon="ui-icon-disk" value="Ingreso" action="#{encajeController.registerIncome()}" />
+                            <p:commandButton icon="ui-icon-disk" value="Egreso" action="#{encajeController.registerOutcome()}" />
+                        </p:panelGrid>
+                        
+                    </p:tab>
+                    
+                    <p:tab title="Reportes">
+                        <p:panelGrid columns="2">
+                            <p:commandButton value="Detalle de Movimiento" ajax="false" action="#{encajeController.openReportDetail()}" onclick="this.form.target='_blank'"/>
+                            <p:commandButton value="Total por entidades" ajax="false" action="#{encajeController.openReportTotal()}" onclick="this.form.target='_blank'"/>
+                        </p:panelGrid>
+                    </p:tab>
+
+                </p:tabView>
+                </h:form>
+            </ui:define>
+        </ui:composition>       
+    </h:body>
+</html>

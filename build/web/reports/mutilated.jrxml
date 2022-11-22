@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="572" pageHeight="752" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d76ff2d2-c5a1-452d-a0be-f10e2e1dc3ed">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="Created" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idAgency" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idBank" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     vault.`Amount` AS vault_Amount,
+     currency.`Name` AS currency_Name,
+     currency.`Symbol` AS currency_Symbol,
+     cash.`Value` AS cash_Value,
+     vault.`MainVault` AS vault_MainVault,
+     agency.`Name` AS agency_Name
+FROM
+     `agency` agency INNER JOIN `vault` vault ON agency.`idAgency` = vault.`idAgency`
+     INNER JOIN `cash` cash ON vault.`Value` = cash.`Value`
+     AND cash.`idCurrency` = vault.`idCurrency`
+     AND cash.`Active` = vault.`Active`
+     INNER JOIN `currency` currency ON cash.`idCurrency` = currency.`idCurrency`
+WHERE
+     vault.Created = $P{Created}
+ AND vault.MainVault <> 'reserve'
+ AND agency.idAgency = $P{idAgency}
+ AND vault.Active = '0'
+ORDER BY
+     cash_Value DESC]]>
+	</queryString>
+	<field name="vault_Amount" class="java.math.BigDecimal"/>
+	<field name="currency_Name" class="java.lang.String"/>
+	<field name="currency_Symbol" class="java.lang.String"/>
+	<field name="cash_Value" class="java.math.BigDecimal"/>
+	<field name="vault_MainVault" class="java.lang.String"/>
+	<field name="agency_Name" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="243" splitType="Stretch">
+			<crosstab>
+				<reportElement x="0" y="0" width="187" height="186" uuid="9a685a25-de08-47e2-a64c-706b38ef45e8"/>
+				<rowGroup name="cash_Value" width="54" totalPosition="End">
+					<bucket order="Descending" class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$F{cash_Value}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField pattern="###0">
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="54" height="20" uuid="7db9a947-f5b3-4c4d-a9e1-7eb98bd4f07b"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Arial" size="10" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{cash_Value}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="54" height="21" uuid="62182a5b-beee-4a02-81a0-0980cbc8f74d"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Arial" size="10" isBold="true"/>
+								</textElement>
+								<text><![CDATA[TOTAL]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="currency_Name" height="0" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{currency_Name}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="vault_AmountMeasure" class="java.math.BigDecimal" calculation="Sum">
+					<measureExpression><![CDATA[$F{vault_Amount}]]></measureExpression>
+				</measure>
+				<crosstabCell width="54" height="20">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="54" height="20" uuid="f1f594e9-e9e5-4aa9-9732-3094b5281110"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{vault_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="54" height="21" rowTotalGroup="cash_Value">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="#,##0">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="54" height="21" uuid="40a4e6be-7c91-4cad-b4c7-646ded1a83f6"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="Arial" size="10"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{vault_AmountMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="56" height="20" columnTotalGroup="currency_Name">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="56" height="20" uuid="24099684-f091-44f5-8ed8-bb5d2c0a9959"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$V{vault_AmountMeasure}.divide( $V{cash_Value} )]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="56" height="21" rowTotalGroup="cash_Value" columnTotalGroup="currency_Name">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>
